@@ -4,7 +4,7 @@
 current_date=$(date '+%Y-%m-%d %H:%M:%S')
 Diskthreshold=80
 file_name=""
-email="m.labibebidallah@nu.edu.eg"
+email="defaulemail@gmail.com"
 
 # ----------------------------------- Help Fucntion -------------------------------------------
 function help {
@@ -16,6 +16,7 @@ function help {
   echo "  -h              Display this help message"
   echo
   echo "This script monitors disk usage, CPU usage, and memory usage, and generates a system report."
+  echo "Caution: You should update the default email variable in the script if you will not specify one or use -e email."
   exit 1
 }
 # ----------------------------------- Email Function -------------------------------------------
@@ -42,7 +43,7 @@ function check_disk_usage {
   emailbody="<html>
   <body>
     <p>To Whom It May Concern,</p>
-    <p>The following disk has exceeded the set usage threshold on the machine <b>$machine_name</b> (IP: <b>$machine_ip</b>):</p>
+    <p>The following disk has exceeded the set usage threshold $Diskthreshold on the machine <b>$machine_name</b> (IP: <b>$machine_ip</b>):</p>
     <table border='1' style='border-collapse: collapse;'>
       <tr>
         <th>Filesystem</th>
@@ -72,6 +73,8 @@ function check_disk_usage {
   if [ -z "$disk_mount" ]; then
     echo "No disk usage is greater than $Diskthreshold%. No warning."
   else
+    disk_results=$(df -h | sort -k5 -n | head -n 1 && df -h | sort -k5 -n -r | head -n 1)
+    disk_results="$disk_results\nWARNING !!!"
     send_email "$emailsubj" "$emailbody" "$email"
   fi
 }
