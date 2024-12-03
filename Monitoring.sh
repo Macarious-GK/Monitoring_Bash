@@ -71,7 +71,8 @@ function check_disk_usage {
 
   # Check if any disk exceeds the threshold
   if [ -z "$disk_mount" ]; then
-    echo "No disk usage is greater than $Diskthreshold%. No warning."
+    disk_results=$(df -h | sort -k5 -n | head -n 1 && df -h | sort -k5 -n -r)
+    disk_results="$disk_results\nNo disk usage is greater than $Diskthreshold%. No warning."
   else
     disk_results=$(df -h | sort -k5 -n | head -n 1 && df -h | sort -k5 -n -r | head -n 1)
     disk_results="$disk_results\nWARNING !!!"
